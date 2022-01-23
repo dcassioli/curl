@@ -2030,8 +2030,10 @@ static CURLcode sectransp_connect_step1(struct Curl_easy *data,
   if(conn->ssl_config.verifyhost) {
     size_t snilen;
     char *snihost = Curl_ssl_snihost(data, hostname, &snilen);
-    if(!snihost)
+    if(!snihost) {
+      failf(data, "Failed to set SNI");
       return CURLE_SSL_CONNECT_ERROR;
+    }
     err = SSLSetPeerDomainName(backend->ssl_ctx, snihost, snilen);
 
     if(err != noErr) {

@@ -467,8 +467,10 @@ static CURLcode bearssl_connect_step1(struct Curl_easy *data,
   }
   else {
     char *snihost = Curl_ssl_snihost(data, hostname, NULL);
-    if(!snihost)
+    if(!snihost) {
+      failf(data, "Failed to set SNI");
       return CURLE_SSL_CONNECT_ERROR;
+    }
     hostname = snihost;
   }
 

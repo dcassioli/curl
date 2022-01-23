@@ -1878,11 +1878,12 @@ static CURLcode nss_setup_connect(struct Curl_easy *data,
 #endif
   };
   char *snihost = Curl_ssl_snihost(data, SSL_HOST_NAME(), NULL);
-  if(!snihost)
+  if(!snihost) {
+    failf(data, "Failed to set SNI");
     return CURLE_SSL_CONNECT_ERROR;
+  }
 
   backend->data = data;
-
 
   /* list of all NSS objects we need to destroy in nss_do_close() */
   Curl_llist_init(&backend->obj_list, nss_destroy_object);

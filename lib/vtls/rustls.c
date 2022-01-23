@@ -370,8 +370,10 @@ cr_init_backend(struct Curl_easy *data, struct connectdata *conn,
   DEBUGASSERT(rconn == NULL);
   {
     char *snihost = Curl_ssl_snihost(data, hostname, NULL);
-    if(!snihost)
+    if(!snihost) {
+      failf(data, "Failed to set SNI");
       return CURLE_SSL_CONNECT_ERROR;
+    }
     result = rustls_client_connection_new(backend->config, snihost, &rconn);
   }
   if(result != RUSTLS_RESULT_OK) {

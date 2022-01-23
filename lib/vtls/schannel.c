@@ -938,8 +938,10 @@ schannel_connect_step1(struct Curl_easy *data, struct connectdata *conn,
 
   {
     char *snihost = Curl_ssl_snihost(data, hostname, NULL);
-    if(!snihost)
+    if(!snihost) {
+      failf(data, "Failed to set SNI");
       return CURLE_SSL_CONNECT_ERROR;
+    }
     host_name = curlx_convert_UTF8_to_tchar(snihost);
     if(!host_name)
       return CURLE_OUT_OF_MEMORY;

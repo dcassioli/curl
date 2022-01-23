@@ -831,8 +831,10 @@ static CURLcode gskit_connect_step1(struct Curl_easy *data,
   /* Process SNI. Ignore if not supported (on OS400 < V7R1). */
   if(sni) {
     char *snihost = Curl_ssl_snihost(data, sni, NULL);
-    if(!snihost)
+    if(!snihost) {
+      failf(data, "Failed to set SNI");
       return CURLE_SSL_CONNECT_ERROR;
+    }
     result = set_buffer(data, BACKEND->handle,
                         GSK_SSL_EXTN_SERVERNAME_REQUEST, snihost, TRUE);
     if(result == CURLE_UNSUPPORTED_PROTOCOL)

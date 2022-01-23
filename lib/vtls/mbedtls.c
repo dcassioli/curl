@@ -567,7 +567,7 @@ mbed_connect_step1(struct Curl_easy *data, struct connectdata *conn,
       /* mbedtls_ssl_set_hostname() sets the name to use in CN/SAN checks and
          the name to set in the SNI extension. So even if curl connects to a
          host specified as an IP address, this function must be used. */
-      failf(data, "couldn't set hostname in mbedTLS");
+      failf(data, "Failed to set SNI");
       return CURLE_SSL_CONNECT_ERROR;
     }
   }
