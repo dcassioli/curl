@@ -595,7 +595,6 @@ wolfssl_connect_step2(struct Curl_easy *data, struct connectdata *conn,
   int ret = -1;
   struct ssl_connect_data *connssl = &conn->ssl[sockindex];
   struct ssl_backend_data *backend = connssl->backend;
-  const char * const hostname = SSL_HOST_NAME();
   const char * const dispname = SSL_HOST_DISPNAME();
   const char * const pinnedpubkey = SSL_PINNED_PUB_KEY();
 
@@ -606,9 +605,10 @@ wolfssl_connect_step2(struct Curl_easy *data, struct connectdata *conn,
 
   /* Enable RFC2818 checks */
   if(SSL_CONN_CONFIG(verifyhost)) {
-    ret = wolfSSL_check_domain_name(backend->handle, hostname);
-    if(ret == SSL_FAILURE)
-      return CURLE_OUT_OF_MEMORY;
+    char *snihost = Curl_ssl_snihost(data, SSL_HOST_NAME(), NULL);
+    if(!snihost ||
+       (wolfSSL_check_domain_name(backend->handle, snihost) == SSL_FAILURE))
+      return CURLE_SSL_CONNECT_ERROR;
   }
 
   ret = SSL_connect(backend->handle);
